@@ -2,17 +2,17 @@
     <string name="app_name">Canvas_3</string>
 
     <string-array name="diacritics">
-        <item></item>
-        <item></item>
-        <item></item>
-        <item></item>
-        <item></item>
-        <item></item>
-        <item></item>
-        <item></item>
-        <item></item>
-        <item></item>
-        <item></item>
-        <item></item>
+        <item>َ</item> <!-- fatha -->
+        <item> ً</item> <!-- fatha tanween -->
+        <item> ُ</item> <!-- damma -->
+        <item> ٌ</item> <!-- damma tanween -->
+        <item> ِ</item> <!-- kasra -->
+        <item> ٍ</item> <!-- kasra tanween -->
+        <item> ْ</item> <!-- sukun -->
+        <item> ۡ</item> <!-- sukun (2) -->
+        <item> ٰ</item> <!-- alif khanjariyah -->
+        <item> ّ</item> <!-- shadda -->
+        <item> ٓ</item> <!-- madda -->
+        <item> ۜ</item> <!-- seen -->
     </string-array>
 </resources>
