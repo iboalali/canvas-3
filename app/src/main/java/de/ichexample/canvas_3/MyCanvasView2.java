@@ -21,7 +21,6 @@ import java.util.Locale;
 class MyCanvasView2 extends View {
 
     private Paint mTextPaint;
-    private int posY;
     private int margin;
     private int linePadding;
     @ColorInt
@@ -66,7 +65,6 @@ class MyCanvasView2 extends View {
         backgroundColor = ResourcesCompat.getColor(getResources(), R.color.mycolor, null);
         linePadding = getResources().getDimensionPixelOffset(R.dimen.line_padding);
         margin = getResources().getDimensionPixelOffset(R.dimen.default_margin);
-        posY = margin;
     }
 
     @Override
@@ -77,15 +75,27 @@ class MyCanvasView2 extends View {
         // the methods getWidth() and getTop() can only give the correct value after the
         // initialization phase
         int posX = getWidth() - margin;
-        posY += getTop();
+        int posY = margin + getTop();
 
         for (String line : lines) {
             // This method gets you the boundaries of the given text.
             // This is not needed if we draw the whole line at once.
             //mTextPaint.getTextBounds(line, 0, line.length(), textBound);
-            
+
             canvas.drawText(line, posX, posY, mTextPaint);
             posY += linePadding;
         }
+        /* drawing char for char
+        for (String line : lines) {
+            int posX = getWidth() - margin;
+            for (int i = 0; i < line.length(); i++) {
+                // This method gets you the boundaries of the given text.
+                mTextPaint.getTextBounds(line, i, (i + 1), textBound);
+                posX -= (textBound.right - textBound.left);
+                canvas.drawText(line, i, (i + 1), posX, posY, mTextPaint);
+            }
+            posY += linePadding;
+        }
+         */
     }
 }
