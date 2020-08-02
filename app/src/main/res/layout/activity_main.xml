@@ -1,55 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_main_relative_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/weiss"
-    android:orientation="vertical">
+    android:background="@color/weiss">
 
-
-    <LinearLayout
-        android:id="@+id/oberlay"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolOben"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="0dp"
+        android:layout_height="wrap_content"
         android:background="@color/toolcolor"
-        android:orientation="vertical">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolOben"
-            android:layout_width="match_parent"
-            android:background="@color/toolcolor"
-            android:layout_height="50dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/lekview"
+    <de.ichexample.canvas_3.MyCanvasView2
+        android:id="@+id/arabic_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
-        android:layout_marginBottom="50dp"
-        android:background="@color/mycolor"
-        android:orientation="vertical"></LinearLayout>
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/toolUnten"
+        app:layout_constraintTop_toBottomOf="@id/toolOben" />
 
-
-    <LinearLayout
-        android:id="@+id/unerlay"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolUnten"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginBottom="1dp"
-        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content"
         android:background="@color/toolcolor"
-        android:orientation="horizontal">
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:title="#" />
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolUnten"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/toolcolor"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme"
-            app:title="#" />
-    </LinearLayout>
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
