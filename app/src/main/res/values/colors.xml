@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+-->
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+
+    <color name="schwarz">#FF000000</color>
+    <color name="weiss">#FAFCFC</color>
+    <color name="toolcolor">#C0AB98</color>
+    <color name="mycolor">#E9DAC0</color>
+    <color name="ascent">#21FF12</color>
+    <color name="top">#ff1b01</color>
+    <color name="baseline">#ac1230</color>
+    <color name="descent">#04f</color>
+    <color name="bottom">#78129f</color>
+    <color name="measured_width">#bc12ff</color>
+    <color name="text_bounds">#B17290</color>
+</resources>
