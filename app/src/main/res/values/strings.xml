@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">Canvas_3</string>
+
+    <string-array name="diacritics">
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+    </string-array>
 </resources>
