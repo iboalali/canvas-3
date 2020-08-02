@@ -1,6 +1,7 @@
 package de.ichexample.canvas_3;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -9,8 +10,9 @@ import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.util.AttributeSet;
 import android.view.View;
-import android.content.res.Resources;
+
 import androidx.core.content.res.ResourcesCompat;
+
 import java.util.ArrayList;
 
 import static android.graphics.Color.BLACK;
@@ -29,31 +31,31 @@ public class MyCanvasView extends View {
     private Rect mFrame;
     MediaPlayer mediaPlayer;
     Paint mTextBoundsPaint = new Paint();
-    Rect []rectW = new Rect[50]; // Raum f. wort
+    Rect[] rectW = new Rect[50]; // Raum f. wort
 
-    float Spacebreite=0;
+    float Spacebreite = 0;
 
     ArrayList<String> list = new ArrayList<>();
-        Rect TextContener = new Rect();
+    Rect TextContener = new Rect();
 
     private String m_szText;
-    private int m_x=0,  m_y=0;
-    int woX=0, woY=0;
-    int status=1;
+    private int m_x = 0, m_y = 0;
+    int woX = 0, woY = 0;
+    int status = 1;
     int yy, xx;
-    int myzeile=0;
+    int myzeile = 0;
 
 
     int ScrX, ScrY;
     float topY, butY;
     int xPos, yPos, yVor;
-    int recWnr=0;// Rect Wort Nummer  f. Wort
-    int yplus=100;
+    int recWnr = 0;// Rect Wort Nummer  f. Wort
+    int yplus = 100;
 
     //    int yzahl=0;
-    int iTimer=0;
+    int iTimer = 0;
 
-    String[] haa = new String[ 8 ];
+    String[] haa = new String[8];
 
     MyCanvasView(Context context) {
         this(context, null);
@@ -61,17 +63,17 @@ public class MyCanvasView extends View {
 
     public MyCanvasView(Context context, AttributeSet attributeSet) {
         super(context);
-        woX=0;
-        woY=0;
-        status=1;
+        woX = 0;
+        woY = 0;
+        status = 1;
         mBackgroundColor = ResourcesCompat.getColor(getResources(),
                 R.color.mycolor, null);
         mDrawColor = ResourcesCompat.getColor(getResources(), R.color.schwarz, null);
         mPath = new Path();
-        mTextPaint = new Paint( Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG );
+        mTextPaint = new Paint(Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
 
-        mTextPaint.setTextAlign( Paint.Align.RIGHT ); // rechts schreiben
-        mTextPaint.setTextSize( pxFromDp( context, 50 ) );// 43
+        mTextPaint.setTextAlign(Paint.Align.RIGHT); // rechts schreiben
+        mTextPaint.setTextSize(pxFromDp(context, 50));// 43
         mediaPlayer = MediaPlayer.create(context, R.raw.haa);
 
         Rpaint.setColor(BLUE);
@@ -79,7 +81,7 @@ public class MyCanvasView extends View {
         Rpaint.setStyle(Paint.Style.STROKE);
 
         int i;
-        for ( i = 0; i < 50; i++)
+        for (i = 0; i < 50; i++)
             rectW[i] = new Rect();
 
     }//#############################
@@ -93,34 +95,34 @@ public class MyCanvasView extends View {
         mExtraCanvas = new Canvas(mExtraBitmap);
         mExtraCanvas.drawColor(mBackgroundColor);
 
-        haa[ 0 ] = "ها هو هي";
-        haa[ 1 ] = "ه ههه";
-        haa[ 2 ] = "ه هاء";
-        haa[ 3 ] = "هادي نَهْر";
-        haa[ 4 ] = "كَتَب واجِباته";
-        haa[ 5 ] = "حَيَوانٌ جَميلٌ";
-        haa[ 6 ] = "يُحِبُ ألتُّفّاحَ";
-        haa[ 7 ] = "زارَ نَبيهٌ أُمَّهُ";
+        haa[0] = "ها هو هي";
+        haa[1] = "ه ههه";
+        haa[2] = "ه هاء";
+        haa[3] = "هادي نَهْر";
+        haa[4] = "كَتَب واجِباته";
+        haa[5] = "حَيَوانٌ جَميلٌ";
+        haa[6] = "يُحِبُ ألتُّفّاحَ";
+        haa[7] = "زارَ نَبيهٌ أُمَّهُ";
 
     }//###################
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        ScrX=getWidth();
-        int height=getHeight();
-        ScrY= height/8;
-        ScrY*=0.9;
+        ScrX = getWidth();
+        int height = getHeight();
+        ScrY = height / 8;
+        ScrY *= 0.9;
 
-        if (status == 1){    // ganze seite schreiben und keine zeile markieren
-            yy=ScrY;
-            xx =ScrX-40;
+        if (status == 1) {    // ganze seite schreiben und keine zeile markieren
+            yy = ScrY;
+            xx = ScrX - 40;
             xPos = ScrX - 40;
             yPos = ScrY;
-            myzeile=1;
+            myzeile = 1;
             ZeileSchreiben(mExtraCanvas, haa, xPos, yPos, status);
-            status=0;
-            iTimer=0;
+            status = 0;
+            iTimer = 0;
         }
         canvas.drawBitmap(mExtraBitmap, 0, 0, null);
 
@@ -128,31 +130,31 @@ public class MyCanvasView extends View {
     }// ende ondraw
 //#############################################
 
-    void  ZeileSchreiben(Canvas canvas , String []str ,int x ,int y, int mysatus) {
-        int ZeilenLang =0;
-        if (mysatus ==1) {
+    void ZeileSchreiben(Canvas canvas, String[] str, int x, int y, int mysatus) {
+        int ZeilenLang = 0;
+        if (mysatus == 1) {
 
-            boolean iOpen=true;
+            boolean iOpen = true;
             Paint.FontMetrics fm;
-            float ytm ;
+            float ytm;
             char zeichen;
-            int letterZahl=0;
-            int rectnr=-1;
+            int letterZahl = 0;
+            int rectnr = -1;
             String strgCopy;
-            int RectRight=0;
-            boolean iSpace= false;
-            int x1=0;
-            String satz="";
+            int RectRight = 0;
+            boolean iSpace = false;
+            int x1 = 0;
+            String satz = "";
 
             fm = mTextPaint.getFontMetrics();
-            ytm =  fm.bottom - fm.top  ;  // 265.4297
+            ytm = fm.bottom - fm.top;  // 265.4297
             yPos = (int) ytm;
             int nZeilen = 7;  //aZeilen->GetSize();
-            recWnr=0;
-            yplus=100;
+            recWnr = 0;
+            yplus = 100;
 
 //##########################################################################
-            for (int zeilcount=0; zeilcount < nZeilen; zeilcount++) {    //#
+            for (int zeilcount = 0; zeilcount < nZeilen; zeilcount++) {    //#
 //##########################################################################
                 strgCopy = str[zeilcount];
                 ZeilenLang = strgCopy.length();
@@ -164,80 +166,73 @@ public class MyCanvasView extends View {
                 rectW[recWnr].top = yPos;
                 mTextPaint.setColor(BLACK);
                 // Buchstaben der Zeile ausgeben
-                for( int letterCounter=0; letterCounter<ZeilenLang; letterCounter++){
-                    zeichen= strgCopy.charAt( letterCounter ); // c++ zeichen= strg.GetAt(letterCounter);
+                for (int letterCounter = 0; letterCounter < ZeilenLang; letterCounter++) {
+                    zeichen = strgCopy.charAt(letterCounter); // c++ zeichen= strg.GetAt(letterCounter);
 
                     //todo hier wird alle Buchstaben und Harekat untersucht
-                    if( zeichen==32)
-                    {
-                        iSpace=true;
-                        Spacebreite = mTextPaint.measureText( String.valueOf(zeichen) );
-                        mTextPaint.getTextBounds( String.valueOf(zeichen), 0, 1, TextContener );
+                    if (zeichen == 32) {
+                        iSpace = true;
+                        Spacebreite = mTextPaint.measureText(String.valueOf(zeichen));
+                        mTextPaint.getTextBounds(String.valueOf(zeichen), 0, 1, TextContener);
                         TextContener.right = (int) Spacebreite;
-                        RectRight=TextContener.right;
-                        letterZahl=ZeilenLang-letterCounter;
-                        if(letterZahl>1)
-                        {
-                            letterZahl= strgCopy.charAt(letterCounter+1);
-                            if(letterZahl!=32)
-                                rectnr=letterCounter+1;
+                        RectRight = TextContener.right;
+                        letterZahl = ZeilenLang - letterCounter;
+                        if (letterZahl > 1) {
+                            letterZahl = strgCopy.charAt(letterCounter + 1);
+                            if (letterZahl != 32)
+                                rectnr = letterCounter + 1;
                         }
+                    } else
+                        satz += String.valueOf(zeichen);
+
+                    canvas.drawText(String.valueOf(zeichen), xPos, yPos + yplus, mTextPaint);
+
+                    if (iSpace) {
+                        iSpace = false;
+                        xPos -= RectRight;
+                    } else {
+                        x1 = xPos;
+                        mTextPaint.getTextBounds(String.valueOf(zeichen), 0, 1, TextContener);
+                        xPos -= TextContener.right;  //textBreite; // c++ X -= size.cx;
                     }
-                    else
-                        satz+=String.valueOf(zeichen);
-
-                    canvas.drawText(String.valueOf(zeichen), xPos, yPos+yplus, mTextPaint);
-
-                if(iSpace) {
-                    iSpace = false;
-                    xPos -= RectRight;
-                }
-                else {
-                    x1 = xPos;
-                    mTextPaint.getTextBounds(String.valueOf(zeichen), 0, 1, TextContener);
-                    xPos -= TextContener.right;  //textBreite; // c++ X -= size.cx;
-                }
-                        //rectbedienen
+                    //rectbedienen
                     // bei dem lezten Buchstabe vor Space und Rect Oefnnen
-                    if(rectnr==letterCounter){
-                        rectW[recWnr].right=x1;
-                        rectW[recWnr].top=yPos;
-                        iOpen=true;
-                        rectnr=-1;
+                    if (rectnr == letterCounter) {
+                        rectW[recWnr].right = x1;
+                        rectW[recWnr].top = yPos;
+                        iOpen = true;
+                        rectnr = -1;
                     }
 
                     // bei dem letzten Buchstabe der Zeile Rect schliessen
-                    letterZahl=ZeilenLang-letterCounter;
+                    letterZahl = ZeilenLang - letterCounter;
 
-                    if(letterZahl==1){
-                        if(iOpen){
+                    if (letterZahl == 1) {
+                        if (iOpen) {
                             rectW[recWnr].left = xPos;
                             rectW[recWnr].bottom = yPos + (int) ytm;
 // canvas.drawRect(rectW[recWnr], Rpaint);
-                            iOpen=false;
-                            recWnr +=1;
+                            iOpen = false;
+                            recWnr += 1;
                             list.add(satz);
-                            satz="";
+                            satz = "";
                         }
                     }
 
                     // bei dem lezten Buchstabe vor Space und Rect schliessen
                     // list.add und String loeschen
-                    letterZahl=ZeilenLang-letterCounter;
-                    if(letterZahl>1)
-                    {
-                        letterZahl= strgCopy.charAt(letterCounter+1);
-                        if(letterZahl==32)
-                        {
-                            if(iOpen)
-                            {
-                                rectW[recWnr].left=xPos;
-                                rectW[recWnr].bottom= yPos+(int)ytm;// c++tm.tmHeight + tm.tmExternalLeading;
- //canvas.drawRect(rectW[recWnr], Rpaint);
-                                iOpen=false;
-                                recWnr +=1;
+                    letterZahl = ZeilenLang - letterCounter;
+                    if (letterZahl > 1) {
+                        letterZahl = strgCopy.charAt(letterCounter + 1);
+                        if (letterZahl == 32) {
+                            if (iOpen) {
+                                rectW[recWnr].left = xPos;
+                                rectW[recWnr].bottom = yPos + (int) ytm;// c++tm.tmHeight + tm.tmExternalLeading;
+                                //canvas.drawRect(rectW[recWnr], Rpaint);
+                                iOpen = false;
+                                recWnr += 1;
                                 list.add(satz);
-                                satz="";
+                                satz = "";
                             }
                         }
                     }
@@ -245,7 +240,7 @@ public class MyCanvasView extends View {
                 }// zweite for
 
                 xPos = ScrX - 40; //ect.right; //  - 30;//20;
-                yPos += (int)ytm; //tm.tmHeight + tm.tmExternalLeading; // +10;
+                yPos += (int) ytm; //tm.tmHeight + tm.tmExternalLeading; // +10;
             }// erste for
         } /// if(status== 1)
     }//ende Zeilen schreiben
@@ -255,6 +250,7 @@ public class MyCanvasView extends View {
     public static int getScreenWidth() {
         return Resources.getSystem().getDisplayMetrics().widthPixels;
     }
+
     // Get the height of the screen
     public static int getScreenHeight() {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
