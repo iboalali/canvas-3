@@ -35,7 +35,8 @@ class MyCanvasView2 extends View {
     private int mMargin;
     private int mLinePadding;
     private int mSpaceBetweenWords;
-    private char mSelectedChar = 'ك';
+    private char mSelectedChar = 'ل';
+    private char mSelectedChar2 = 'َ';
     String[] mDiacritics;
     @ColorInt
     private int mBackgroundColor;
@@ -172,26 +173,6 @@ class MyCanvasView2 extends View {
                     Log.d(TAG, "Width until the selected letter " + advance + "px");
                     canvas.drawTextRun(wordString, index, index + 1, 0, wordLength, selectedPosX, posY, true, mSelectedPaint);
                 }
-
-                // draw lines between letters
-                //for (int i = 0; i < wordLength; i++) {
-                //    char character = wordString.charAt(i);
-                //    if (isCharArabicDiacritics(character)) {
-                //        continue;
-                //    }
-                //    float advance = mTextPaint.getRunAdvance(
-                //            wordString,
-                //            0,
-                //            i,
-                //            0,
-                //            wordLength,
-                //            true,
-                //            i
-                //    );
-                //    float selectedPosX = posX - advance;
-                //    Log.d(TAG, "Letter " + character + " with width until the letter " + advance + "px");
-                //    canvas.drawLine(selectedPosX, posY - 100, selectedPosX, posY + 10, mRectPaint);
-                //}
 
                 float desiredWidth = Layout.getDesiredWidth(wordString, 0, wordLength, mTextPaint);
                 Log.d(TAG, "Word width is: " + desiredWidth + "px");
