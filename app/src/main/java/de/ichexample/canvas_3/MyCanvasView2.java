@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.text.Layout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.ColorInt;
@@ -24,15 +25,18 @@ import java.util.Locale;
  */
 class MyCanvasView2 extends View {
 
+    private static final String TAG = "CanvasDraw";
     private Rect mTextBound = new Rect();
     private Rect mCanvasRect = new Rect();
-    private Paint mTextPaint;
-    private Paint mSelectedPaint;
+    private TextPaint mBigTextPaint;
     private Paint mRectPaint;
-    private TextPaint mTextPaint2;
-    private TextPaint mSelectedPaint2;
+    private TextPaint mTextPaint;
+    private TextPaint mSelectedPaint;
     private int mMargin;
     private int mLinePadding;
+    private int mSpaceBetweenWords;
+    private char mSelectedChar = 'ك';
+    String[] mDiacritics;
     @ColorInt
     private int mBackgroundColor;
     int[][] mIndices;
@@ -56,6 +60,30 @@ class MyCanvasView2 extends View {
             "مَكانُ  المَلِكِ  كَبير"
     };
 
+    String[][] multiLine = new String[][]{
+            {"ك"},
+            {"كا", "كو", "كي"},
+            {"كامِل", "مَلِك", "مَكان", "كَبير"},
+            {"كَلِمتكَ", "البَيتُ", "كَبير"},
+            {"كَتَبَ", "أَبي", "في", "دَفْتَري"},
+            {"مَكانُ", "المَلِكِ", "كَبير"}
+    };
+
+    Line[] lines = new Line[]{
+            new Line(multiLine[0], mSelectedChar),
+            new Line(multiLine[1], mSelectedChar),
+            new Line(multiLine[2], mSelectedChar),
+            new Line(multiLine[3], mSelectedChar),
+            new Line(multiLine[4], mSelectedChar),
+            new Line(multiLine[5], mSelectedChar),
+    };
+
+    Line[] oneLine = new Line[]{
+            new Line(new String[]{"المَلِكِ"}, mSelectedChar),
+            new Line(new String[]{"دَفْتَري"}, mSelectedChar),
+            new Line(new String[]{"كَلِمتكَ"}, mSelectedChar)
+    };
+
     public MyCanvasView2(Context context) {
         super(context);
         init();
@@ -77,47 +105,32 @@ class MyCanvasView2 extends View {
     }
 
     private void init() {
-        mTextPaint = new Paint(Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
+        Locale arabicLocale = new Locale("ar", "", "");
+
+        mBigTextPaint = new TextPaint(Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
+        mBigTextPaint.setTextAlign(Paint.Align.RIGHT);
+        mBigTextPaint.setTextSize(getResources().getDimension(R.dimen.bigTextSize));
+        mBigTextPaint.setColor(Color.BLACK);
+        mBigTextPaint.setTextLocale(arabicLocale);
+
+        mTextPaint = new TextPaint(Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
         mTextPaint.setTextAlign(Paint.Align.RIGHT);
         mTextPaint.setTextSize(getResources().getDimension(R.dimen.textSize));
         mTextPaint.setColor(Color.BLACK);
-        mTextPaint.setTextLocale(new Locale("ar", "JO", ""));
+        mTextPaint.setTextLocale(arabicLocale);
 
-        mTextPaint2 = new TextPaint(Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
-        mTextPaint2.setTextAlign(Paint.Align.RIGHT);
-        mTextPaint2.setTextSize(getResources().getDimension(R.dimen.textSize));
-        mTextPaint2.setColor(Color.BLACK);
-        mTextPaint2.setTextLocale(new Locale("ar", "JO", ""));
-
-        mSelectedPaint = new Paint(Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
-        mSelectedPaint.setTextAlign(Paint.Align.RIGHT);
-        mSelectedPaint.setTextSize(getResources().getDimension(R.dimen.textSize));
+        mSelectedPaint = new TextPaint(mTextPaint);
         mSelectedPaint.setColor(Color.RED);
-        mSelectedPaint.setTextLocale(new Locale("ar", "JO", ""));
-
-        mSelectedPaint2 = new TextPaint(Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
-        mSelectedPaint2.setTextAlign(Paint.Align.RIGHT);
-        mSelectedPaint2.setTextSize(getResources().getDimension(R.dimen.textSize));
-        mSelectedPaint2.setColor(Color.RED);
-        mSelectedPaint2.setTextLocale(new Locale("ar", "JO", ""));
 
         mRectPaint = new Paint();
         mRectPaint.setStyle(Paint.Style.STROKE);
         mRectPaint.setColor(Color.BLUE);
         mRectPaint.setStrokeWidth(3);
 
-        mIndices = new int[][]{
-                getIndicesForCharInLine(mLines_2[0], 'ك'),
-                getIndicesForCharInLine(mLines_2[1], 'ك'),
-                getIndicesForCharInLine(mLines_2[2], 'ك'),
-                getIndicesForCharInLine(mLines_2[3], 'ك'),
-                getIndicesForCharInLine(mLines_2[4], 'ك'),
-                getIndicesForCharInLine(mLines_2[5], 'ك')
-        };
-
         mBackgroundColor = ResourcesCompat.getColor(getResources(), R.color.mycolor, null);
         mLinePadding = getResources().getDimensionPixelOffset(R.dimen.line_padding);
-        mMargin = getResources().getDimensionPixelOffset(R.dimen.default_margin);
+        mMargin = mSpaceBetweenWords = getResources().getDimensionPixelOffset(R.dimen.default_margin);
+        mDiacritics = getResources().getStringArray(R.array.diacritics);
     }
 
     @Override
@@ -134,53 +147,56 @@ class MyCanvasView2 extends View {
         mCanvasRect.right = getWidth() - 50;
         mCanvasRect.bottom = getHeight() - 50;
 
-        for (int i = 0; i < mLines_2.length; i++) {
+        for (Line line : lines) {
             float posX = getWidth() - mMargin;
-            String line = mLines_2[i];
 
-            //String lineWithoutArabicDiacritics = removeArabicDiacriticsFromString(line);
+            Log.d(TAG, "Start at posx: " + posX);
 
-            // This method gets you the boundaries of the given text.
-            // This is not needed if we draw the whole line at once.
-            //mTextPaint.getTextBounds(line, 0, line.length(), textBound);
+            for (Word word : line.getWords()) {
+                String wordString = word.getWord();
+                int wordLength = wordString.length();
+                Log.d(TAG, "Draw word: \"" + wordString + "\" with length " + wordLength);
+                canvas.drawTextRun(wordString, 0, wordLength, 0, wordLength, posX, posY, true, mTextPaint);
 
-            // skip drawing the arabic text in red, if there are no diacritics in this line, to
-            // improve performance.
-            //if (!lineWithoutArabicDiacritics.equals(line)) {
-            //    canvas.drawTextRun(line, 0, line.length(), 0, line.length(), posX, posY, true, mSelectedPaint);
-            //}
+                for (int index : word.highlightIndices) {
+                    float advance = mTextPaint.getRunAdvance(
+                            wordString,
+                            0,
+                            index,
+                            0,
+                            wordLength,
+                            true,
+                            index
+                    );
+                    float selectedPosX = posX - advance;
+                    Log.d(TAG, "Width until the selected letter " + advance + "px");
+                    canvas.drawTextRun(wordString, index, index + 1, 0, wordLength, selectedPosX, posY, true, mSelectedPaint);
+                }
 
-            canvas.drawTextRun(line, 0, line.length(), 0, line.length(), posX, posY, true, mTextPaint2);
+                // draw lines between letters
+                //for (int i = 0; i < wordLength; i++) {
+                //    char character = wordString.charAt(i);
+                //    if (isCharArabicDiacritics(character)) {
+                //        continue;
+                //    }
+                //    float advance = mTextPaint.getRunAdvance(
+                //            wordString,
+                //            0,
+                //            i,
+                //            0,
+                //            wordLength,
+                //            true,
+                //            i
+                //    );
+                //    float selectedPosX = posX - advance;
+                //    Log.d(TAG, "Letter " + character + " with width until the letter " + advance + "px");
+                //    canvas.drawLine(selectedPosX, posY - 100, selectedPosX, posY + 10, mRectPaint);
+                //}
 
-            for (int j = 0; j < mIndices[i].length; j++) {
-                int start = mIndices[i][j];
-                //int end = (start + 1 >= line.length())? start + 1 : start + 2;
-                int end = start + 1;
-                int contextStart = Math.max(start - 1, 0);
-                int contextEnd = end;
-                //int offset = (start == 0)? 0 : end;
-                int offset = start;
-
-                mSelectedPaint.getTextBounds(line, 0, start, mTextBound);
-                int width = mTextBound.width();
-                float desiredWidth = Layout.getDesiredWidth(line, 0, start, mSelectedPaint2);
-
-                float calculatedOffset = mSelectedPaint.getRunAdvance(
-                        line,
-                        start,
-                        end,
-                        contextStart,
-                        contextEnd,
-                        true,
-                        offset
-                );
-
-                posX -= desiredWidth;
-
-                canvas.drawTextRun(line, start, start + 1, 0, line.length(), posX, posY, true, mSelectedPaint2);
-
-                canvas.drawRect(mCanvasRect, mRectPaint);
-                canvas.drawRect(mTextBound, mRectPaint);
+                float desiredWidth = Layout.getDesiredWidth(wordString, 0, wordLength, mTextPaint);
+                Log.d(TAG, "Word width is: " + desiredWidth + "px");
+                posX -= (desiredWidth + mSpaceBetweenWords);
+                Log.d(TAG, "New posx after Word width and space: " + posX);
             }
 
             posY += mLinePadding;
@@ -195,6 +211,16 @@ class MyCanvasView2 extends View {
         }
 
         return line;
+    }
+
+    private boolean isCharArabicDiacritics(char c) {
+        for (String diacritic : mDiacritics) {
+            if (diacritic.charAt(0) == c) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private int[] getIndicesForCharInLine(@NonNull String line, char c) {
