@@ -12,16 +12,22 @@ class Word {
 
     @NonNull
     private String word;
+    private String wordWithoutHighlightedDiacritics;
     int[] highlightIndices;
 
     public Word(@NonNull String word, char c) {
         this.word = word;
         highlightIndices = getHighlightIndices(word, c);
+        wordWithoutHighlightedDiacritics = getWordWithoutHighlightedDiacritics(word, c);
     }
 
     @NonNull
     public String getWord() {
         return word;
+    }
+
+    public String getWordWithoutHighlightedDiacritics() {
+        return wordWithoutHighlightedDiacritics;
     }
 
     private static int[] getHighlightIndices(@NonNull String word, char c) {
@@ -38,5 +44,9 @@ class Word {
         }
 
         return result;
+    }
+
+    private static String getWordWithoutHighlightedDiacritics(@NonNull String word, char c) {
+        return word.replace(String.valueOf(c), "");
     }
 }
