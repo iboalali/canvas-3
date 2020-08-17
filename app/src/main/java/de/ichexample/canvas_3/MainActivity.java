@@ -10,7 +10,7 @@ import androidx.appcompat.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity {
 
-    private char mSelectedChar = 'م';
+    private char mSelectedChar = 'ل';
     private char mSelectedChar2 = 'َ';
 
     String[][] multiLine = new String[][]{
@@ -19,7 +19,8 @@ public class MainActivity extends AppCompatActivity {
             {"كامِل", "مَلِك", "مَكان", "كَبير"},
             {"كَلِمتكَ", "البَيتُ", "كَبير"},
             {"كَتَبَ", "أَبي", "في", "دَفْتَري"},
-            {"مَكانُ", "المَلِكِ", "كَبير"}
+            {"مَكانُ", "المَلِكِ", "كَبير"},
+            {"بِسْمِ", "ٱللَّٰهِ", "ٱلرَّحْمَٰنِ", "ٱلرَّحِيمِ"}
     };
 
     String[] mLines_2 = new String[]{
@@ -43,14 +44,14 @@ public class MainActivity extends AppCompatActivity {
     };
 
     Line[] lines = new Line[]{
-            new Line(multiLine[0], mSelectedChar2),
-            new Line(multiLine[1], mSelectedChar2),
-            new Line(multiLine[2], mSelectedChar2),
-            new Line(multiLine[3], mSelectedChar2),
-            new Line(multiLine[4], mSelectedChar2),
-            new Line(multiLine[5], mSelectedChar2),
+            new Line(multiLine[0], mSelectedChar),
+            new Line(multiLine[1], mSelectedChar),
+            new Line(multiLine[2], mSelectedChar),
+            new Line(multiLine[3], mSelectedChar),
+            new Line(multiLine[4], mSelectedChar),
+            new Line(multiLine[5], mSelectedChar),
+            new Line(multiLine[6], mSelectedChar)
     };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
         ArabicWithDiacriticsPageView pageView = findViewById(R.id.arabic_view);
         pageView.setBackgroundColorResource(R.color.mycolor);
-        pageView.setPage(new Page(lines, mSelectedChar2));
+        pageView.setPage(new Page(lines, mSelectedChar));
     }
 
     @Override

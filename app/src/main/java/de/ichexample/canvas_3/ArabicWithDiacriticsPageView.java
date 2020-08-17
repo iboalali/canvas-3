@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.text.Layout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.ColorInt;
@@ -16,8 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -130,26 +129,82 @@ class ArabicWithDiacriticsPageView extends View {
             if (mPage.isSelectedCharArabicDiacritics()) {
                 for (Word word : line.getWords()) {
                     String wordString = word.getWord();
-                    String wordWithout = word.getWordWithoutHighlightedDiacritics();
-
                     int wordLength = wordString.length();
-                    int wordLengthWithout = wordWithout.length();
 
-                    canvas.drawTextRun(wordString, 0, wordLength, 0, wordLength, posX, posY, true, mSelectedTextPaint);
-                    canvas.drawTextRun(
-                            wordWithout,
-                            0,
-                            wordLengthWithout,
-                            0,
-                            wordLengthWithout,
-                            posX,
-                            posY,
-                            true,
-                            mTextPaint
-                    );
+                    if (word.highlightIndices.length > 0) {
+                        int start = 0;
+                        int end = 0;
+                        float advance;
+                        float selectedPosX;
 
-                    float desiredWidth = Layout.getDesiredWidth(wordString, 0, wordLength, mTextPaint);
-                    posX -= (desiredWidth + mSpaceBetweenWords);
+                        canvas.drawTextRun(wordString, 0, wordLength, 0, wordLength, posX, posY, true, mSelectedTextPaint);
+
+                        for (int index : word.highlightIndices) {
+                            end = index - 1;
+                            if (end < 0) {
+                                continue;
+                            }
+
+                            advance = mTextPaint.getRunAdvance(
+                                    wordString,
+                                    0,
+                                    start,
+                                    0,
+                                    wordLength,
+                                    true,
+                                    start
+                            );
+
+                            selectedPosX = posX - advance;
+                            canvas.drawTextRun(
+                                    wordString,
+                                    start,
+                                    index,
+                                    0,
+                                    wordLength,
+                                    selectedPosX,
+                                    posY,
+                                    true,
+                                    mTextPaint
+                            );
+
+                            start = index;
+                        }
+
+                        start++;
+
+                        advance = mTextPaint.getRunAdvance(
+                                wordString,
+                                0,
+                                start,
+                                0,
+                                wordLength,
+                                true,
+                                start
+                        );
+
+                        if (start != wordLength) {
+                            selectedPosX = posX - advance;
+                            canvas.drawTextRun(
+                                    wordString,
+                                    start,
+                                    wordLength,
+                                    0,
+                                    wordLength,
+                                    selectedPosX,
+                                    posY,
+                                    true,
+                                    mTextPaint
+                            );
+                        }
+
+                        float desiredWidth = Layout.getDesiredWidth(wordString, 0, wordLength, mSelectedTextPaint);
+                        posX -= (desiredWidth + mSpaceBetweenWords);
+                    } else {
+                        canvas.drawTextRun(wordString, 0, wordLength, 0, wordLength, posX, posY, true, mTextPaint);
+                        float desiredWidth = Layout.getDesiredWidth(wordString, 0, wordLength, mTextPaint);
+                        posX -= (desiredWidth + mSpaceBetweenWords);
+                    }
                 }
             } else {
                 for (Word word : line.getWords()) {
